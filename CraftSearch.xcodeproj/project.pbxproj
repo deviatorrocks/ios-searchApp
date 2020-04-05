@@ -23,6 +23,8 @@
 		D4759FC92439F91200BB20A0 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4759FC82439F91200BB20A0 /* Service.swift */; };
 		D4759FCB2439F92800BB20A0 /* NetworkService+Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4759FCA2439F92800BB20A0 /* NetworkService+Protocol.swift */; };
 		D4A4DBF62439FC5C0002DBD6 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A4DBF52439FC5C0002DBD6 /* Constants.swift */; };
+		D4A4DBF9243A0F690002DBD6 /* CoreDataStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A4DBF8243A0F690002DBD6 /* CoreDataStorageManager.swift */; };
+		D4A4DBFB243A25F80002DBD6 /* ItemUIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A4DBFA243A25F80002DBD6 /* ItemUIModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +59,8 @@
 		D4759FC82439F91200BB20A0 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		D4759FCA2439F92800BB20A0 /* NetworkService+Protocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+Protocol.swift"; sourceTree = "<group>"; };
 		D4A4DBF52439FC5C0002DBD6 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		D4A4DBF8243A0F690002DBD6 /* CoreDataStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStorageManager.swift; sourceTree = "<group>"; };
+		D4A4DBFA243A25F80002DBD6 /* ItemUIModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemUIModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +125,7 @@
 		D4759F8E2439E4BD00BB20A0 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				D4A4DBF7243A0F270002DBD6 /* PersistentStorage */,
 				D4759FC72439F8FF00BB20A0 /* NetworkLayer */,
 				D4759FBE2439F47D00BB20A0 /* Item+CoreDataClass.swift */,
 				D4759FBF2439F47D00BB20A0 /* Item+CoreDataProperties.swift */,
@@ -129,6 +134,7 @@
 				D4759F722439E28600BB20A0 /* CraftSearch.xcdatamodeld */,
 				D4759FC52439F7F300BB20A0 /* UImageView+Extension.swift */,
 				D4A4DBF52439FC5C0002DBD6 /* Constants.swift */,
+				D4A4DBFA243A25F80002DBD6 /* ItemUIModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -174,6 +180,14 @@
 				D4759FCA2439F92800BB20A0 /* NetworkService+Protocol.swift */,
 			);
 			path = NetworkLayer;
+			sourceTree = "<group>";
+		};
+		D4A4DBF7243A0F270002DBD6 /* PersistentStorage */ = {
+			isa = PBXGroup;
+			children = (
+				D4A4DBF8243A0F690002DBD6 /* CoreDataStorageManager.swift */,
+			);
+			path = PersistentStorage;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -280,6 +294,8 @@
 				D4759FC92439F91200BB20A0 /* Service.swift in Sources */,
 				D4759FC32439F47D00BB20A0 /* Item+CoreDataProperties.swift in Sources */,
 				D4759FC22439F47D00BB20A0 /* Item+CoreDataClass.swift in Sources */,
+				D4A4DBF9243A0F690002DBD6 /* CoreDataStorageManager.swift in Sources */,
+				D4A4DBFB243A25F80002DBD6 /* ItemUIModel.swift in Sources */,
 				D4759F6E2439E28600BB20A0 /* SearchViewController.swift in Sources */,
 				D4759F6A2439E28600BB20A0 /* AppDelegate.swift in Sources */,
 				D4759F932439E6CF00BB20A0 /* SearchViewModel.swift in Sources */,

@@ -18,6 +18,13 @@ enum APIName: String {
 }
 protocol NetworkServiceProtocol {
     func getDataWith(apiName: APIName,
-                     parameters: [String: String],
-                     completion: @escaping (Result<[[String: AnyObject]]>) -> Void)
+                    parameters: [String: AnyObject],
+                    completion: @escaping (Result<[String: AnyObject]>) -> Void)
 }
+//extension NetworkServiceProtocol {
+//    static func getDataWith(apiName: APIName,
+//                            parameters: [String: AnyObject],
+//                            completion: @escaping (Result<[[String: AnyObject]]>) -> Void) {
+//        getDataWith(apiName: apiName, parameters: parameters, completion: completion)
+//    }
+//}

@@ -22,41 +22,46 @@ class APIService: NetworkServiceProtocol {
         return headers
     }
     func getDataWith(apiName: APIName,
-                     parameters: [String: String],
-                     completion: @escaping (Result<[[String: AnyObject]]>) -> Void) {
+                     parameters: [String: AnyObject],
+                     completion: @escaping (Result<[String: AnyObject]>) -> Void) {
         
-        let urlString = formUrl(apiName: apiName, parameters: parameters)
+        let headers = APIService.getHeaders()
         
-        guard let url = URL(string: urlString) else { return completion(.Error("Invalid URL, we can't update your feed")) }
-
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
+        guard let url = formUrl(apiName: apiName, parameters: parameters) else {
+            print()
+            return completion(.Error("Invalid URL, we can't update your feed"))
             
-         guard error == nil else { return completion(.Error(error!.localizedDescription)) }
-            guard let data = data else { return completion(.Error(error?.localizedDescription ?? "There are no new Items to show"))
-            }
-            do {
-                if let json = try JSONSerialization.jsonObject(with: data, options: [.mutableContainers]) as? [String: AnyObject] {
-                    guard let itemsJsonArray = json["items"] as? [[String: AnyObject]] else {
-                        return completion(.Error(error?.localizedDescription ?? "There are no new Items to show"))
-                    }
-                    DispatchQueue.main.async {
-                        completion(.Success(itemsJsonArray))
-                    }
+        }
+        let request = NSMutableURLRequest(url: url)
+        request.allHTTPHeaderFields = headers
+        request.httpMethod = "GET"
+        let session = URLSession(configuration: .default,
+                                 delegate: nil,
+                                 delegateQueue: nil)
+        let task = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) in
+            guard error == nil else { return completion(.Error(error!.localizedDescription)) }
+                guard let data = data else { return completion(.Error(error?.localizedDescription ?? "There are no new Items to show"))
                 }
-            } catch let error {
-                return completion(.Error(error.localizedDescription))
-            }
-            }.resume()
+                do {
+                    if let json = try JSONSerialization.jsonObject(with: data, options: [.mutableContainers]) as? [String: AnyObject] {
+                        DispatchQueue.main.async {
+                            completion(.Success(json))
+                        }
+                    }
+                } catch let error {
+                    return completion(.Error(error.localizedDescription))
+                }
+        })
+        task.resume()
     }
-    func formUrl(apiName: APIName, parameters: [String: String]) -> String {
-        var urlString = endPoint+apiName.rawValue
-        var paramStr = ""
+    func formUrl(apiName: APIName, parameters: [String: AnyObject]) -> URL? {
+        let urlString = endPoint+apiName.rawValue
+        var components = URLComponents(string: urlString)!
+        components.queryItems = [URLQueryItem]()
         for (key, value) in parameters {
-            paramStr += paramStr.isEmpty ? "?\(key)=\(value)" : "&\(key)=\(value)"
+            let queryItem = URLQueryItem(name: key, value: "\(value)")
+            components.queryItems!.append(queryItem)
         }
-        if !paramStr.isEmpty {
-            urlString += paramStr
-        }
-        return urlString
+        return components.url!
     }
 }
