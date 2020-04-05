@@ -11,7 +11,7 @@
         <!--Search List-->
         <scene sceneID="0xH-XK-veC">
             <objects>
-                <viewController id="SSu-T8-XpB" sceneMemberID="viewController">
+                <viewController id="SSu-T8-XpB" customClass="SearchViewController" customModule="CraftSearch" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="9NI-hC-rlt">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
