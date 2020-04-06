@@ -7,33 +7,89 @@
 //
 
 import UIKit
+import Foundation
+class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-class SearchViewController: UIViewController {
-
+    @IBOutlet var popOverView: UIView!
+    @IBOutlet weak var popoverImageVIew: CustomImageView!
+    @IBOutlet weak var searchListTableView: UITableView!
+    @IBOutlet weak var searchbarView: UISearchBar!
+    var isLoadingMore = false
     var viewModel: SearchViewModel!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        //searchListTableView.register(SearchItemCell.self, forCellReuseIdentifier: "SearchItemCell")
         viewModel = SearchViewModel(service: SearchService())
         viewModel.delegate = self
-        viewModel.loadDataForText("taylor swift")
+        searchbarView.text = "taylor swift"
+        viewModel.loadDataForText(searchbarView.text ?? "")
+        self.popOverView.layer.cornerRadius = 10
+    }
+    @IBAction func dismissPopover(_ sender: Any) {
+        self.popOverView.removeFromSuperview()
+    }
+    func showPopOver(index: Int) {
+        self.view.addSubview(popOverView)
+        if let url = URL(string: self.viewModel.getThumbnailImage(index)) {
+            self.popoverImageVIew.loadImageFromUrl(url)
+            popOverView.center = self.view.center
+        }
+    }
+}
+extension SearchViewController {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.viewModel.getCurrentRecords()
     }
 
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SearchItemCell", for: indexPath) as! SearchItemCell
+        let imageUrl = viewModel.getItemImage(indexPath.row)
+        let title = viewModel.getItemTitle(indexPath.row)
+        let desc = viewModel.getWebSearchUrl(indexPath.row)
+        cell.configure(imageUrl, title, desc, indexPath.row)
+        cell.delegate = self
+        return cell
+    }
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let url = viewModel.getWebSearchUrl(indexPath.row)
+//        let storyBoard = UIStoryboard(name: "Main", bundle:nil)
+//        let webVC = storyBoard.instantiateViewController(withIdentifier: "WebViewController") as! WebViewController
+//        self.navigationController?.present(webVC, animated: true, completion: {
+//            webVC.loadWebUrl(url: url)
+//        })
+//    }
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let count = self.viewModel.getCurrentRecords()
+        if indexPath.row + 1 == count {
+            if self.isLoadingMore {
+                return
+            }
+            self.isLoadingMore = true
+            self.viewModel.loadNextData()
+        }
+    }
+}
+extension SearchViewController: SearchCellDelegate {
+    func handleImageTap(_ index: Int) {
+        self.showPopOver(index: index)
+    }
+}
+extension SearchViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if let text = searchBar.text {
+            searchBar.resignFirstResponder()
+            self.viewModel.loadDataForText(text)
+        }
+    }
 
 }
 extension SearchViewController: SearchViewModelDelegate {
     func loadUIData() {
         DispatchQueue.main.async {
             DispatchQueue.main.async {
-                print("//Reload tabelview")
-                ///Will remove once UI come sin picture.
-                if self.viewModel.getTotalRecords() > 30 {
-                    for i in 0...10 {
-                        print("\(i)---\(self.viewModel.getItemTitle(i))")
-                    }
-                    return
-                }
-                self.viewModel.loadNextData()
+                self.isLoadingMore = false
+                self.searchListTableView.reloadData()
             }
             
         }
@@ -41,6 +97,7 @@ extension SearchViewController: SearchViewModelDelegate {
     
     func loadError() {
         DispatchQueue.main.async {
+            self.isLoadingMore = false
             self.showAlertWith(title: "Error", message: "Error message")
         }
     }

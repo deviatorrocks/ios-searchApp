@@ -35,9 +35,19 @@ class SearchViewModel {
     init(service: SearchService) {
         self.service = service
     }
+    func resetSearchConfig() {
+        self.storage.clearData()
+        self.dataSource.removeAll()
+        self.currentPageNumber = 1
+        self.totalRecords = 0
+        self.delegate?.loadUIData()
+    }
     func loadDataForText(_ searchString: String) {
+        ///Previous searched data
+        if searchString != currentSearchString {
+            self.resetSearchConfig()
+        }
         currentSearchString = searchString
-        
         service.loadSrvice(apiName: .imageSearch,
                            parameters: getParameters()) { (value) in
                                 switch value {
@@ -67,8 +77,11 @@ class SearchViewModel {
     func getWebSearchUrl(_ index: Int) -> String {
         return dataSource[index].imageWebSearchUrl ?? ""
     }
-    func getTotalRecords() -> Int32 {
-        return self.totalRecords
+    func getTotalRecords() -> Int {
+        return Int(self.totalRecords)
+    }
+    func getCurrentRecords() -> Int {
+        return Int(self.dataSource.count)
     }
     func loadNextData() {
         currentPageNumber += 1
