@@ -18,6 +18,7 @@ class SearchViewModel {
     private var currentPageNumber = 1
     private var currentSearchString = ""
     private var totalRecords: Int32 = 0
+    private var errorCode: String = ""
     
     subscript(index: Int) -> Item? {
         get {
@@ -28,24 +29,25 @@ class SearchViewModel {
             }
         }
     }
-    let service: APIService
+    let service: SearchService
     let storage = CoreDataStorageManager.sharedInstance
     
-    init(_ service: NetworkServiceProtocol) {
-        self.service = service as! APIService
+    init(service: SearchService) {
+        self.service = service
     }
     func loadDataForText(_ searchString: String) {
         currentSearchString = searchString
         
-        service.getDataWith(apiName: .imageSearch,
-                            parameters: getParameters()) { (value) in
+        service.loadSrvice(apiName: .imageSearch,
+                           parameters: getParameters()) { (value) in
                                 switch value {
                                 case .Success(let data):
                                     self.storage.clearData()
                                     let item = self.storage.saveInCoreDataWith(dictionary: data)
                                     self.updateDataSource(item)
                                     self.delegate?.loadUIData()
-                                case .Error(_):
+                                case .Error(let message):
+                                    self.errorCode = message
                                     self.delegate?.loadError()
                                 }
         }
@@ -65,12 +67,15 @@ class SearchViewModel {
     func getWebSearchUrl(_ index: Int) -> String {
         return dataSource[index].imageWebSearchUrl ?? ""
     }
-    func getTotalRecords() -> Int {
-        return dataSource.count
+    func getTotalRecords() -> Int32 {
+        return self.totalRecords
     }
     func loadNextData() {
         currentPageNumber += 1
         loadDataForText(currentSearchString)
+    }
+    func getErrorCode() -> String {
+        return errorCode
     }
 }
 extension SearchViewModel {

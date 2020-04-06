@@ -11,9 +11,7 @@ import UIKit
 
 class APIService: NetworkServiceProtocol {
     
-    lazy var endPoint: String = {
-        return "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/"
-    }()
+    static let endPoint: String = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/"
 
     static func getHeaders() -> [String: String] {
         var headers = [String: String]()
@@ -21,13 +19,13 @@ class APIService: NetworkServiceProtocol {
         headers[Constants.APIHeaderKeys.apiKey] = "14e1f691c0msha3d763bd79c45fep145bd1jsnfb664ff86ab3"
         return headers
     }
-    func getDataWith(apiName: APIName,
+    static func getDataWith(apiName: APIName,
                      parameters: [String: AnyObject],
                      completion: @escaping (Result<[String: AnyObject]>) -> Void) {
         
         let headers = APIService.getHeaders()
         
-        guard let url = formUrl(apiName: apiName, parameters: parameters) else {
+        guard let url = APIService.formUrl(apiName: apiName, parameters: parameters) else {
             print()
             return completion(.Error("Invalid URL, we can't update your feed"))
             
@@ -54,8 +52,8 @@ class APIService: NetworkServiceProtocol {
         })
         task.resume()
     }
-    func formUrl(apiName: APIName, parameters: [String: AnyObject]) -> URL? {
-        let urlString = endPoint+apiName.rawValue
+    static func formUrl(apiName: APIName, parameters: [String: AnyObject]) -> URL? {
+        let urlString = APIService.endPoint+apiName.rawValue
         var components = URLComponents(string: urlString)!
         components.queryItems = [URLQueryItem]()
         for (key, value) in parameters {

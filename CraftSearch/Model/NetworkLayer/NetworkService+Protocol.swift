@@ -17,14 +17,14 @@ enum APIName: String {
     case imageSearch = "ImageSearchAPI"
 }
 protocol NetworkServiceProtocol {
-    func getDataWith(apiName: APIName,
+    static func getDataWith(apiName: APIName,
                     parameters: [String: AnyObject],
                     completion: @escaping (Result<[String: AnyObject]>) -> Void)
 }
-//extension NetworkServiceProtocol {
-//    static func getDataWith(apiName: APIName,
-//                            parameters: [String: AnyObject],
-//                            completion: @escaping (Result<[[String: AnyObject]]>) -> Void) {
-//        getDataWith(apiName: apiName, parameters: parameters, completion: completion)
-//    }
-//}
+extension NetworkServiceProtocol {
+    static func getDataWith(apiName: APIName,
+                            parameters: [String: AnyObject],
+                            completion: @escaping (Result<[[String: AnyObject]]>) -> Void) {
+        getDataWith(apiName: apiName, parameters: parameters, completion: completion)
+    }
+}
