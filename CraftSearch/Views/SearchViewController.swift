@@ -14,7 +14,7 @@ class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        viewModel = SearchViewModel(APIService())
+        viewModel = SearchViewModel(service: SearchService())
         viewModel.delegate = self
         viewModel.loadDataForText("taylor swift")
     }
