@@ -83,7 +83,6 @@ class CoreDataStorageManager: NSObject {
     
     func saveInCoreDataWith(dictionary: [String: AnyObject]) -> Search? {
         if let search = createSearchEntityFrom(dictionary: dictionary) as? Search {
-           //print(search)
            do {
                try CoreDataStorageManager.sharedInstance.persistentContainer.viewContext.save()
                return search

@@ -23,7 +23,7 @@ class SearchViewModelTests: XCTestCase {
     }
     func testDataResponse() {
         mockApiService.isFailure = false
-        let expectedTotalRecords: Int32 = 2893
+        let expectedTotalRecords = 2893
         viewModel?.delegate = self as? SearchViewModelDelegate
         viewModel?.loadDataForText("taylor swift")
         XCTAssertNotNil(viewModel)

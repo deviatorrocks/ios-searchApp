@@ -26,12 +26,12 @@ class APIService: NetworkServiceProtocol {
         let headers = APIService.getHeaders()
         
         guard let url = APIService.formUrl(apiName: apiName, parameters: parameters) else {
-            print()
             return completion(.Error("Invalid URL, we can't update your feed"))
             
         }
         let request = NSMutableURLRequest(url: url)
         request.allHTTPHeaderFields = headers
+        ///TODO: to be made configurable.
         request.httpMethod = "GET"
         let session = URLSession(configuration: .default,
                                  delegate: nil,

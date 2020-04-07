@@ -18,17 +18,17 @@ class SearchItemCell: UITableViewCell {
     @IBOutlet weak var thumbnailImage: CustomImageView!
     
     func configure(_ imageUrl: String, _ title: String, _ description: String, _ index: Int) {
-        print(imageUrl)
-        print(title)
-        print(description)
         self.index = index
         if let url = URL(string: "\(imageUrl)") {
-            print("-----\(url)")
             self.thumbnailImage.loadImageFromUrl(url)
         }
         self.titleLabel.text = title
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
         thumbnailImage.addGestureRecognizer(tap)
+    }
+    override func draw(_ rect: CGRect) {
+        thumbnailImage.layer.borderWidth = 0.5
+        thumbnailImage.layer.borderColor = UIColor.black.cgColor
     }
     @objc func handleTap(_ sender: UITapGestureRecognizer) {
         // handling code
