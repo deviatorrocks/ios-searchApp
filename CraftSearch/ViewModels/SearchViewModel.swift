@@ -44,7 +44,7 @@ class SearchViewModel {
     }
     func loadDataForText(_ searchString: String) {
         ///Previous searched data
-        if searchString != currentSearchString {
+        if searchString != currentSearchString && !currentSearchString.isEmpty {
             self.resetSearchConfig()
         }
         currentSearchString = searchString

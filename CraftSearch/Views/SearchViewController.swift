@@ -10,6 +10,7 @@ import UIKit
 import Foundation
 class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    @IBOutlet weak var loadingIndicatorView: UIActivityIndicatorView!
     @IBOutlet var popOverView: UIView!
     @IBOutlet weak var popoverImageVIew: CustomImageView!
     @IBOutlet weak var searchListTableView: UITableView!
@@ -18,23 +19,36 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var viewModel: SearchViewModel!
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        //searchListTableView.register(SearchItemCell.self, forCellReuseIdentifier: "SearchItemCell")
+        
         viewModel = SearchViewModel(service: SearchService())
         viewModel.delegate = self
         searchbarView.text = "taylor swift"
         viewModel.loadDataForText(searchbarView.text ?? "")
         self.popOverView.layer.cornerRadius = 10
+        
+        self.searchListTableView.tableFooterView = UIView()
+        showLoading()
     }
     @IBAction func dismissPopover(_ sender: Any) {
         self.popOverView.removeFromSuperview()
     }
     func showPopOver(index: Int) {
+        popOverView.layer.borderWidth = 1
+        popOverView.layer.borderColor = UIColor.black.cgColor
         self.view.addSubview(popOverView)
         if let url = URL(string: self.viewModel.getThumbnailImage(index)) {
             self.popoverImageVIew.loadImageFromUrl(url)
             popOverView.center = self.view.center
         }
+    }
+    func showLoading() {
+        self.searchListTableView.bringSubviewToFront(self.loadingIndicatorView)
+        self.loadingIndicatorView.startAnimating()        
+        self.loadingIndicatorView.isHidden = false
+    }
+    func dismissLoading() {
+        self.loadingIndicatorView.stopAnimating()
+        self.loadingIndicatorView.isHidden = true
     }
 }
 extension SearchViewController {
@@ -51,14 +65,15 @@ extension SearchViewController {
         cell.delegate = self
         return cell
     }
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let url = viewModel.getWebSearchUrl(indexPath.row)
-//        let storyBoard = UIStoryboard(name: "Main", bundle:nil)
-//        let webVC = storyBoard.instantiateViewController(withIdentifier: "WebViewController") as! WebViewController
-//        self.navigationController?.present(webVC, animated: true, completion: {
-//            webVC.loadWebUrl(url: url)
-//        })
-//    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.dismissPopover(self.popOverView)
+        let url = viewModel.getWebSearchUrl(indexPath.row)
+        let storyBoard = UIStoryboard(name: "Main", bundle:nil)
+        let webVC = storyBoard.instantiateViewController(withIdentifier: "WebViewController") as! WebViewController
+        self.navigationController?.present(webVC, animated: true, completion: {
+            webVC.loadWebUrl(url: url)
+        })
+    }
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let count = self.viewModel.getCurrentRecords()
         if indexPath.row + 1 == count {
@@ -80,6 +95,7 @@ extension SearchViewController: UISearchBarDelegate {
         if let text = searchBar.text {
             searchBar.resignFirstResponder()
             self.viewModel.loadDataForText(text)
+            showLoading()
         }
     }
 
@@ -87,16 +103,15 @@ extension SearchViewController: UISearchBarDelegate {
 extension SearchViewController: SearchViewModelDelegate {
     func loadUIData() {
         DispatchQueue.main.async {
-            DispatchQueue.main.async {
                 self.isLoadingMore = false
                 self.searchListTableView.reloadData()
+                self.dismissLoading()
             }
-            
-        }
     }
     
     func loadError() {
         DispatchQueue.main.async {
+            self.dismissLoading()
             self.isLoadingMore = false
             self.showAlertWith(title: "Error", message: "Error message")
         }
