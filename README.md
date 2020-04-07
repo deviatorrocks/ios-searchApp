@@ -4,6 +4,10 @@
 
 ###Snaps of POC:
 ![](./Screenshots/Main-page.png)
+
+
 ![](./Screenshots/Thumbnail.png)
+
+
 ![](./Screenshots/Web-page.png)
 
